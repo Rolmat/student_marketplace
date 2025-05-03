@@ -17,7 +17,7 @@
         <!-- Nav Start -->
         <nav>
           <ul>
-            <li><a href="index.html">Home</a></li>
+            <!-- <li><a href="index.html">Home</a></li>
             <li><a href="about.html">About</a></li>
             <li><a href="buy.html">Buy</a></li>
             <li><a href="sell.html">Sell</a></li>
@@ -25,6 +25,7 @@
             <li>
               <button><a href="signup.html">Sign Up</a></button>
             </li>
+            <li><img src="icons/user.png" id="user-account" alt=""></li> -->
           </ul>
         </nav>
         <!-- Nav End -->
@@ -32,18 +33,18 @@
       <!-- Header End -->
       <!-- Main Start -->
       <main>
-        <form action="" id="login">
+        <form action="" id="login-form">
             <div class="container">
                 <h1>Login</h1>
                 <div class="email">
                     <label for="email">Email</label>
-                    <input type="email" placeholder="Enter your email" name="email" required>
+                    <input type="email" id="email" placeholder="Enter your email" name="email" required>
                 </div>
                 <div class="password">
                     <label for="password">Password</label>
-                    <input type="password" placeholder="Enter your password" name="password" required>
+                    <input type="password" id="password" placeholder="Enter your password" name="password" required>
                 </div>
-                <button type="submit">Login</button>
+                <button type="submit" id="login">Login</button>
                 <a href="signup.html">Don't have an account? Sign up here</a>
             </div>
 
@@ -55,5 +56,6 @@
       <!-- Footer End -->
     </div>
     <!-- Wrapper End -->
+    <script type="module" src="scripts/script.js"></script>
   </body>
 </html>
