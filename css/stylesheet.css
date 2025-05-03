@@ -36,6 +36,10 @@
   #logo {
     padding-left: 20px;
   }
+  #user-account{
+    width: 32px;
+    height: 32px;
+  }
   
   /* Nav */
   nav ul {
@@ -151,18 +155,18 @@
     height: 600px;
     width: 500px;
   }
-  #login h1 {
+  #login-form h1 {
     color: var(--teal);
     text-align: center;
     font-size: 2.5em;
     padding-top: 80px;
     padding-bottom: 20px;
   }
-  #signup h1 {
+  #signup-form h1 {
     color: var(--blue);
     text-align: center;
     font-size: 2.5em;
-    padding-top: 20px;
+    padding-top: 80px;
     padding-bottom: 20px;
   }
   .email {
@@ -172,11 +176,11 @@
     padding: 20px;
   }
   
-  #login label {
+  #login-form label {
     color: var(--blue);
     font-size: 1.5em;
   }
-  #signup label {
+  #signup-form label {
     color: var(--teal);
     font-size: 1.5em;
   }
@@ -192,7 +196,7 @@
     color: var(--grey);
   }
   
-  #login button {
+  #login-form button {
     background-color: var(--teal);
     width: 350px;
     height: 45px;
@@ -203,7 +207,7 @@
     margin-top: 20px;
     margin-bottom: 20px;
   }
-  #signup button {
+  #signup-form button {
     background-color: var(--blue);
     width: 350px;
     height: 45px;
@@ -214,12 +218,12 @@
     margin-top: 20px;
     margin-bottom: 20px;
   }
-  #login a {
+  #login-form a {
     color: var(--blue);
     font-size: 1em;
     padding-top: 20px;
   }
-  #signup a {
+  #signup-form a {
     color: var(--teal);
     font-size: 1em;
     padding-top: 20px;
