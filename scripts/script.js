@@ -2,6 +2,8 @@
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword,onAuthStateChanged,signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  import { getFirestore,collection,doc,setDoc,serverTimestamp,query,orderBy,limit,getDoc,getDocs } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js'
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js"
   // TODO: Add SDKs for Firebase products that you want to use
   // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -17,6 +19,11 @@
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
+  //Initialize Cloud Firestore
+  const db =getFirestore(app);
+  //Initialize Firebase Storage
+  const storage = getStorage(app);
+  //Initialize Firebase authentication
   const auth = getAuth(app);
   onAuthStateChanged(auth,(user)=>{
     if(user){
@@ -37,9 +44,11 @@
     switch(pathname){
       case "/index.html":
         console.log("home");
+        getListings(8);
         break;
       case "/buy.html":
         console.log("buy");
+        getListings();
         break;
       case "/login.html":
         console.log("login");
@@ -50,6 +59,15 @@
         const signUpBtn = document.getElementById("register");
         signUpBtn.addEventListener('click', signUp)
         break;
+      case "/sell.html":
+        console.log("sell")
+        window.previewImage=previewImage;
+        const createListingBtn = document.getElementById("create-listing");
+        createListingBtn.addEventListener('click', createListing);
+        break;
+      case "/product.html":
+        console.log("product");
+        productDetails();
     }
   }
 
@@ -105,4 +123,102 @@ function logOut(event){
       // An error happened.
       alert(error);
     });
+}
+
+let fileInput={}
+function previewImage(event){
+  const img = document.getElementById("preview-image")
+  fileInput=event.files[0];
+  img.src=URL.createObjectURL(fileInput);
+
+}
+
+async function createListing(event){
+  event.preventDefault();
+  const productTitle= document.getElementById("product-title").value;
+  const productPrice = document.getElementById("product-price").value;
+  const productDescription = document.getElementById("product-description").value;
+  try{
+    const docRef = doc(collection(db,"product-details"));
+    const currentUser = auth.currentUser;
+    const imageURL = `/images/${docRef.id}/${fileInput.name}`;
+    const productDetails = {
+      title: productTitle,
+      price: productPrice,
+      description: productDescription,
+      image_url: imageURL,
+      user: currentUser.email,
+      timestamp: serverTimestamp()
+    };
+    await setDoc(docRef,productDetails);
+    const storageRef = ref(storage,imageURL);
+    uploadBytes(storageRef,fileInput).then((snapshot)=>{
+      document.getElementById("sell-form").reset();
+      document.getElementById("preview-image").src='icons/photo.png';
+      alert("Listing Created");
+    })
+  }catch(e){
+    console.log(e);
+  }
+}
+
+async function getListings(quantity=0){
+  console.log("recent listings")
+  const listingContainer = document.querySelector(".listing-container");
+  let q = {};
+  if(quantity>0){
+    q = query(collection(db,"product-details"),orderBy("timestamp","desc"),limit(quantity));
+  }else{
+    q = query(collection(db,"product-details"),orderBy("timestamp","desc"));
+  }
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc)=>{
+    const imageURL=doc.data().image_url
+    console.log(imageURL);
+    const href = "product.html"+"?productID="+doc.id
+    getDownloadURL(ref(storage,imageURL))
+    .then((url) =>{
+      listingContainer.innerHTML+=`
+    <div class="listing-item">
+      <div class="listing-item-image">
+        <a href=${href}><img src="${url}" alt=""></a>
+      </div>
+      <div class="listing-item-text">
+        <p class="listing-item-title">${doc.data().title}</p>
+        <p class="listing-item-price">${doc.data().price}</p>
+      </div>
+    </div>
+    `
+    }).catch((error)=>{
+      console.log(error);
+    })
+  })
+}
+
+async function productDetails() {
+  const paramString = window.location.search;
+  const searchParams = new URLSearchParams(paramString);
+  const docID= searchParams.get("productID");
+  const docRef = doc(db,"product-details",docID);
+  const productTitle = document.querySelector("#product-details-text h2");
+  const productPrice = document.querySelector("#product-details-text h3");
+  const productDescription= document.querySelector("#product-details-text p");
+  const productImage = document.querySelector("#product-details-image img");
+  try{
+    const docSnap = await getDoc(docRef);
+    const imageURL = docSnap.data().image_url;
+    document.querySelector("title").textContent=docSnap.data().title;
+    productTitle.textContent=docSnap.data().title;
+    productPrice.textContent="£"+docSnap.data().price;
+    productDescription.textContent=docSnap.data().description;
+    getDownloadURL(ref(storage,imageURL))
+    .then((url)=>{
+      productImage.setAttribute('src',url);
+    })
+  }catch(e){
+    document.querySelector("title").textContent="Product Not Found";
+    productTitle.textContent="Product Not Found";
+    console.log(e);
+  }
+    
 }

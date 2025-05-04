@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/stylesheet.css" />
+    <title>Sell</title>
+  </head>
+  <body>
+    <!-- Wrapper Start -->
+    <div id="wrapper">
+      <!-- Header Start -->
+      <header>
+        <div id="logo">
+          <img src="icons/forklift.png" alt="" />
+        </div>
+        <!-- Nav Start -->
+        <nav>
+          <ul>
+          </ul>
+        </nav>
+        <!-- Nav End -->
+      </header>
+      <!-- Header End -->
+
+      <!-- Main Start -->
+      <main>
+        <form id="sell-form">
+            <h1>Create Listing</h1>
+            <div class="container">
+                <div class="upload-image">
+                    <label for="file-input"><img src="icons/photo.png" id="preview-image" alt=""></label>
+                    <input type="file" name="file-input" id="file-input" accept="image/*" onchange="previewImage(this)" required>
+                </div>
+                <div class="product-details">
+                    <label for="product-title">Title</label>
+                    <input type="text" id="product-title" name="product-title" required>
+                    <label for="product-price">Price</label>
+                    <input type="number" name="product-price" id="product-price" min="0.00" step="0.01" required>
+                    <label for="product-title">Product Description</label>
+                    <textarea name="product-description" id="product-description" placeholder="Write a description of your product"></textarea>
+                    <button type="submit" id="create-listing">Create Listing</button>
+                </div>
+            </div>
+        </form>
+      </main>
+      <!-- Main End -->
+      <!-- Footer Start -->
+      <footer></footer>
+      <!-- Footer End -->
+    </div>
+    <!-- Wrapper End -->
+     <script type="module" src="scripts/script.js"></script>
+  </body>
+</html>
