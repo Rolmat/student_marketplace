@@ -9,12 +9,7 @@
 
   // Your web app's Firebase configuration
   const firebaseConfig = {
-    apiKey: "AIzaSyDEgE-SrzdhEzbzXcFZQ9ZqZVQ6evLvE2w",
-    authDomain: "integrated-group-project.firebaseapp.com",
-    projectId: "integrated-group-project",
-    storageBucket: "integrated-group-project.firebasestorage.app",
-    messagingSenderId: "1069923170210",
-    appId: "1:1069923170210:web:042d761a38e67c6cf124fb"
+
   };
 
   // Initialize Firebase
@@ -44,7 +39,7 @@
     switch(pathname){
       case "/index.html":
         console.log("home");
-        getListings(8);
+        getListings(4);
         break;
       case "/buy.html":
         console.log("buy");
@@ -77,20 +72,25 @@
     //input fields
     const email= document.getElementById("email").value;
     const password=document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirm-password").value;
+    if(password===confirmPassword){
+      createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+      // Signed up 
+      const user = userCredential.user;
+      window.location.href="index.html"
+          // ...
+      })
+      .catch((error) => {
+          const errorMessage = error.message;
+          alert(errorMessage);
+          // ..
+      });
+    }else{
+      alert("passwords do not match, please check and eneter again");
+    }
 
-    createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-    // Signed up 
-    const user = userCredential.user;
-    window.location.href="index.html"
-        // ...
-    })
-    .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        alert(errorMessage);
-        // ..
-    });
+
 };
 
 function logIn(event){
@@ -108,7 +108,6 @@ function logIn(event){
       // ...
   })
   .catch((error) => {
-      const errorCode = error.code;
       const errorMessage = error.message;
       alert(errorMessage);
       // ..
@@ -157,28 +156,28 @@ async function createListing(event){
       document.getElementById("preview-image").src='icons/photo.png';
       alert("Listing Created");
     })
-  }catch(e){
-    console.log(e);
+  }catch(error){
+    console.log(error);
   }
 }
 
 async function getListings(quantity=0){
   console.log("recent listings")
   const listingContainer = document.querySelector(".listing-container");
-  let q = {};
+  let q;
   if(quantity>0){
-    q = query(collection(db,"product-details"),orderBy("timestamp","desc"),limit(quantity));
+    q = query(collection(db,"product-details"),orderBy("timestamp", "desc"),limit(quantity));
   }else{
-    q = query(collection(db,"product-details"),orderBy("timestamp","desc"));
+    q = query(collection(db,"product-details"),orderBy("timestamp", "desc"));
   }
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc)=>{
     const imageURL=doc.data().image_url
-    console.log(imageURL);
+    console.log(doc.data());
     const href = "product.html"+"?productID="+doc.id
     getDownloadURL(ref(storage,imageURL))
     .then((url) =>{
-      listingContainer.innerHTML+=`
+      listingContainer.insertAdjacentHTML("beforeend",`
     <div class="listing-item">
       <div class="listing-item-image">
         <a href=${href}><img src="${url}" alt=""></a>
@@ -188,7 +187,7 @@ async function getListings(quantity=0){
         <p class="listing-item-price">${doc.data().price}</p>
       </div>
     </div>
-    `
+    `)
     }).catch((error)=>{
       console.log(error);
     })
@@ -202,23 +201,27 @@ async function productDetails() {
   const docRef = doc(db,"product-details",docID);
   const productTitle = document.querySelector("#product-details-text h2");
   const productPrice = document.querySelector("#product-details-text h3");
+  const listingtDate = document.querySelector("#product-details-text h4");
   const productDescription= document.querySelector("#product-details-text p");
   const productImage = document.querySelector("#product-details-image img");
   try{
     const docSnap = await getDoc(docRef);
     const imageURL = docSnap.data().image_url;
+    const time = docSnap.data().timestamp;
+    const date = time.toDate().toDateString();
     document.querySelector("title").textContent=docSnap.data().title;
     productTitle.textContent=docSnap.data().title;
     productPrice.textContent="£"+docSnap.data().price;
+    listingtDate.textContent="Listing created on: "+date;
     productDescription.textContent=docSnap.data().description;
     getDownloadURL(ref(storage,imageURL))
     .then((url)=>{
       productImage.setAttribute('src',url);
     })
-  }catch(e){
+  }catch(error){
     document.querySelector("title").textContent="Product Not Found";
     productTitle.textContent="Product Not Found";
-    console.log(e);
+    console.log(error);
   }
     
 }
