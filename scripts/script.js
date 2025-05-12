@@ -9,7 +9,12 @@
 
   // Your web app's Firebase configuration
   const firebaseConfig = {
-
+    apiKey: "AIzaSyDEgE-SrzdhEzbzXcFZQ9ZqZVQ6evLvE2w",
+    authDomain: "integrated-group-project.firebaseapp.com",
+    projectId: "integrated-group-project",
+    storageBucket: "integrated-group-project.firebasestorage.app",
+    messagingSenderId: "1069923170210",
+    appId: "1:1069923170210:web:042d761a38e67c6cf124fb"
   };
 
 
