@@ -554,13 +554,17 @@
   }
   footer h3{
     margin-top: 30px;
+    margin-bottom: 30px;
     text-align: center;
+    font-size: 1.6em;
   }
   footer p{
     margin-left: 30px;
+    font-size: 1.3em;
   }
   footer a{
     color:#fff;
     margin-left: 30px;
+    font-size: 1.3em;
   }
   
